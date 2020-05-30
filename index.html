@@ -67,6 +67,7 @@ function query() {
                             }),
         contentType: "application/json",
         sucess: function(data) {
+            console.log(data)
             console.log('suc')
             data.Items.forEach(e => {
             console.log('accesing' + e.img_name)
