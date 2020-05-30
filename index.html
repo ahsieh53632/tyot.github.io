@@ -59,7 +59,11 @@ function query() {
                             "type": type,
                             "from": from,
                             "to": to,
-                            "street": document.getElementById('text1').value
+                            "street": document.getElementById('text1').value,
+                            "headers": {
+                                'Access-Control-Allow-Origin': '*',
+                                'Access-Control-Allow-Credentials': true,
+                            }
                             }),
         contentType: "application/json",
         sucess: function(data) {
