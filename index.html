@@ -1,0 +1,99 @@
+<html>
+<head>
+<script src="https://sdk.amazonaws.com/js/aws-sdk-2.7.16.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<h1>還敢亂丟垃圾!! 抓!</h1>
+<script>
+function query() {
+    console.log('start_query')
+    document.getElementById('table').innerHTML = ""
+    var params = ''
+    var type = ''
+    var from = ''
+    var end = ''
+    if (document.getElementById('find_all').checked) {
+        type = 'all'
+        params = {
+            TableName : "tyotdb",
+            ProjectionExpression: "p_img, obj_img",
+            FilterExpression: "#st = :stName",
+            ExpressionAttributeNames:{
+                "#st": "Street"
+            },
+            ExpressionAttributeValues: {
+                ":stName": document.getElementById('text1').value
+            }
+        };
+    } else {
+        type = 's'
+        console.log('find_specific')
+        console.log('from' + document.getElementById('from').value)
+        console.log('to' + document.getElementById('to').value)
+        from = document.getElementById('from').value
+        to = document.getElementById('to').value
+        params = {
+            TableName : "tyotdb",
+            ProjectionExpression: "p_img, obj_img",
+            FilterExpression: "#st = :stName AND #d BETWEEN :from AND :end",
+            ExpressionAttributeNames:{
+                "#st": "Street",
+                "#d": "Date"
+            },
+            ExpressionAttributeValues: {
+                ":stName": document.getElementById('text1').value,
+                ":from": parseInt(document.getElementById('from').value),
+                ":end": parseInt(document.getElementById('to').value),
+            }
+        };
+    }
+
+    document.getElementById('table').innerHTML = `<tr> \
+        <th style="border:2px solid black">Person Image</th> \
+        <th style="border:2px solid black">Object Image</th> \
+        </tr>`;
+    $.ajax(({
+        type: 'POST',
+        url: 'https://0aqeagvj6c.execute-api.ap-northeast-2.amazonaws.com/2/entries',
+        data: JSON.stringify({"message": 'q',
+                            "type": type,
+                            "from": from,
+                            "to": to,
+                            "street": document.getElementById('text1').value
+                            }),
+        contentType: "application/json",
+        sucess: function(data) {
+            console.log('suc')
+            data.Items.forEach(e => {
+            console.log('accesing' + e.img_name)
+            p_link = bucket + e.p_img
+            obj_link = bucket + e.obj_img
+            document.getElementById('table').innerHTML += 
+            "<tr><td style=\"border:2px solid black\"><img src=" + "\"" + p_link + "\"" + "width=\"500\" height=\"400\" /></td><td style=\"border:2px solid black\"><img src=" + "\"" + obj_link + "\"" + "width=\"500\" height=\"400\" /></td></tr>"
+        });
+        }
+    }));
+
+    console.log('done')
+
+}
+
+</script>
+
+</script>
+</head>
+<body>
+    <label>Enter Street Name:</label> <input id="text1" type="text" name="streetname" value="">
+    <button onclick="query()">Search</button>
+    <br />
+    <label>find all <input id='find_all' type='radio' value='true' name='choice' checked='checked'> </label>
+    <br />
+    <lable> find between a specific Date <input id='find_s' type='radio' name='choice' value='false'> </label>
+    <label>From: <input id='from' placeholder= "yyyymmdd" type='text' name='from' value=""> 
+        to <input id='to' placeholder= "yyyymmdd" type='text' name='to' value=""></label>
+    <br />
+    <table style="border:2px solid black; padding: 10px; border-collapse: collapse" id='table'>
+        
+    </table>
+</body>
+</html>
