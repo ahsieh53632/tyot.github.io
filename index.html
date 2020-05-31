@@ -52,6 +52,8 @@ function query() {
         <th style="border:2px solid black">Person Image</th> \
         <th style="border:2px solid black">Object Image</th> \
         </tr>`;
+    
+    var bucket = 'http://s3.amazonaws.com/bucket/tyotimg1/'
     $.ajax(({
         type: 'POST',
         url: 'https://0aqeagvj6c.execute-api.ap-northeast-2.amazonaws.com/2/entries',
