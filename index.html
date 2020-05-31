@@ -53,7 +53,7 @@ function query() {
         <th style="border:2px solid black">Object Image</th> \
         </tr>`;
     
-    var bucket = 'http://s3.amazonaws.com/bucket/tyotimg1/'
+    
     $.ajax(({
         type: 'POST',
         url: 'https://0aqeagvj6c.execute-api.ap-northeast-2.amazonaws.com/2/entries',
@@ -71,6 +71,7 @@ function query() {
         success: function(data) {
             console.log(data)
             console.log('suc')
+            var bucket = 'http://s3.amazonaws.com/bucket/tyotimg1/'
             data.Items.forEach(e => {
             console.log('accesing' + e.p_img)
             p_link = bucket + e.p_img
